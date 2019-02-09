@@ -1,0 +1,34 @@
+version: "3"
+services:
+
+  web:
+    image: php:apache
+    ports:
+      - "80:80"
+      - "433:433"
+    volumes:
+      - ${LAMP_ROOT}/app:/var/www/html
+    restart: on-failure
+
+  pma:
+    image: phpmyadmin/phpmyadmin:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "8080:80"
+
+
+  db:
+    image: yobasystems/alpine-mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    expose:
+      - "3306"
+    volumes:  #Database data in an docker volume
+      - dblamp:/var/lib/mysql
+
+volumes:
+  dblamp:
